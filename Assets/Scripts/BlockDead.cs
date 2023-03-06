@@ -37,6 +37,7 @@ namespace Life
                         {
                             // begin block hover animation
                             state = BlockState.Hover;
+                            AudioManager.audioManager.BlockHover();
                         }
                     }
                 }
@@ -47,6 +48,9 @@ namespace Life
             {
                 Replace();
                 state = BlockState.Descend;
+                AudioManager.audioManager.BlockDescend();
+                var cameraShake = mainCamera.GetComponent<CameraShake>();
+                cameraShake.Shake(0.1f, 0.1f);
             }
             
             // check the state of the block every frame and execution methods
@@ -66,11 +70,13 @@ namespace Life
         /// </summary>
         protected virtual void Replace()
         {
+            AudioManager.audioManager.BlockReplace();
+            
             var pos = transform.position;
                     
             // turn tile on grid to 'alive' status
             GameManager.gameManager.Cells[(int) pos.x, (int) pos.y] = true;
-
+            
             // instantiate new 'alive' block in position as current block
             GameManager.gameManager.Blocks[(int)pos.x, (int)pos.y] = Instantiate(GameManager.gameManager.alive,
                 new Vector3(pos.x, pos.y, hoverPos.z), Quaternion.Euler(-90, 0, 0),

@@ -40,6 +40,7 @@ namespace Life
                             
                             // begin block hover animation
                             state = BlockState.Hover;
+                            AudioManager.audioManager.BlockHover();
                         }
                     }
                 }
@@ -49,6 +50,9 @@ namespace Life
             if ((transform.position - hoverPos).magnitude < 0.1f)
             {
                 state = BlockState.Descend;
+                AudioManager.audioManager.BlockDescend();
+                var cameraShake = mainCamera.GetComponent<CameraShake>();
+                cameraShake.Shake(0.1f, 0.1f);
                 
                 if (_hitId == gameObject)
                 {
@@ -70,6 +74,11 @@ namespace Life
             }
         }
         
+        /// <summary>
+        /// This method replcaes surrounding 'dead' blocks with 'alive' blocks.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         protected virtual void Surround(int x, int y)
         {
             // goes through rows prior to and following current block[x, y]
