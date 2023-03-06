@@ -48,14 +48,14 @@ namespace Life
             // block has reach just about its target position (in place due to floating-point round issues)
             if ((transform.position - hoverPos).magnitude < 0.1f)
             {
+                state = BlockState.Descend;
+                
                 if (_hitId == gameObject)
                 {
                     var pos = transform.position;
-                    Surround((int) pos.x, (int) pos.y);
+                    Surround((int)pos.x, (int)pos.y);
                     _hitId = null;
                 }
-                
-                state = BlockState.Descend;
             }
             
             // check the state of the block every frame and execution methods
@@ -89,7 +89,7 @@ namespace Life
                     var ny = y + j;
                     
                     // position index out-of-bounds on grid
-                    if (nx < 0 || nx > GameManager.gameManager.width || ny < 0 || ny > GameManager.gameManager.height)
+                    if (nx < 1 || nx > GameManager.gameManager.width - 1 || ny < 1 || ny > GameManager.gameManager.height - 1)
                     {
                         // next iteration of loop
                         continue;

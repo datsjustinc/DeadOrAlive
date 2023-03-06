@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Life;
-using UnityEditorInternal;
 
 namespace Life
 {
@@ -48,10 +47,12 @@ namespace Life
                 // enable UI after start finishes execution
                 playerScore.SetActive(true);
                 enemyScore.SetActive(true);
+                var alive = aliveGroup.transform.childCount;
+                var dead = deadGroup.transform.childCount;
                 
                 // continue to keep track of dead and alive block tiles
-                playerText.text = "Alive: " + aliveGroup.transform.childCount;
-                enemyText.text = "Dead: " + deadGroup.transform.childCount;
+                playerText.text = "Alive: " + Mathf.Round(alive * (100f / (alive + dead))) + "%";
+                enemyText.text = "Dead: " + Mathf.Round(dead * (100f / (alive + dead))) + "%";
             }
         }
         

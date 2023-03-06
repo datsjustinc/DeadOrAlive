@@ -639,7 +639,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 4.95
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -663,7 +663,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.5, y: 5.5, z: -10}
+  m_LocalPosition: {x: 10.52, y: 6.45, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -731,8 +731,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
-  width: 20
-  height: 12
+  width: 22
+  height: 14
   tilemap: {fileID: 1101851578}
   alive: {fileID: 8558435007244433658, guid: 3243733152e00ad49a060121bc2dbd97, type: 3}
   dead: {fileID: 1684066253481592056, guid: 9854036db2c8a3e498f1d14ccfb5026f, type: 3}
@@ -1574,11 +1574,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1834874983204294661, guid: 2c50822782b7d284880d556d34d96600, type: 3}
       propertyPath: m_fontSize
-      value: 70
+      value: 65
       objectReference: {fileID: 0}
     - target: {fileID: 1834874983204294661, guid: 2c50822782b7d284880d556d34d96600, type: 3}
       propertyPath: m_fontSizeBase
-      value: 70
+      value: 65
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c50822782b7d284880d556d34d96600, type: 3}
@@ -1591,11 +1591,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5506149927439139058, guid: 932245541b3a7ce479ef4cb77573073e, type: 3}
       propertyPath: m_fontSize
-      value: 70
+      value: 65
       objectReference: {fileID: 0}
     - target: {fileID: 5506149927439139058, guid: 932245541b3a7ce479ef4cb77573073e, type: 3}
       propertyPath: m_fontSizeBase
-      value: 70
+      value: 65
       objectReference: {fileID: 0}
     - target: {fileID: 5506149927641490274, guid: 932245541b3a7ce479ef4cb77573073e, type: 3}
       propertyPath: m_Pivot.x
