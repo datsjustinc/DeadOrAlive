@@ -739,6 +739,8 @@ MonoBehaviour:
   aliveParent: {fileID: 974836711}
   deadParent: {fileID: 128205011}
   check: 1
+  ability1: 1
+  ability2: 1
 --- !u!4 &1034891299
 Transform:
   m_ObjectHideFlags: 0

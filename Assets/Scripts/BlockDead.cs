@@ -17,7 +17,7 @@ namespace Life
         }
 
         /// <summary>
-        /// This function controls function of block press.
+        /// This method inherits parent class update method.
         /// </summary>
         protected override void Update()
         {
@@ -40,16 +40,13 @@ namespace Life
                         }
                     }
                 }
-                
-                // block has reach just about its target position (in place due to floating-point round issues)
-                if ((transform.position - hoverPos).magnitude < 0.1f)
-                {
-                    if (GameManager.gameManager.ability1)
-                    {
-                        GameManager.gameManager.ability1 = false;
-                        Replace();
-                    }
-                }
+            }
+            
+            // block has reach just about its target position (in place due to floating-point round issues)
+            if ((transform.position - hoverPos).magnitude < 0.1f)
+            {
+                Replace();
+                state = BlockState.Descend;
             }
             
             // check the state of the block every frame and execution methods
@@ -64,18 +61,25 @@ namespace Life
             }
         }
 
+        /// <summary>
+        /// This method replaces current block with new block.
+        /// </summary>
         protected virtual void Replace()
         {
             var pos = transform.position;
                     
             // turn tile on grid to 'alive' status
             GameManager.gameManager.Cells[(int) pos.x, (int) pos.y] = true;
-                    
+
             // instantiate new 'alive' block in position as current block
             GameManager.gameManager.Blocks[(int)pos.x, (int)pos.y] = Instantiate(GameManager.gameManager.alive,
                 new Vector3(pos.x, pos.y, hoverPos.z), Quaternion.Euler(-90, 0, 0),
                 GameManager.gameManager.aliveParent);
 
+            // set new instance of 'alive' block to descend state
+            GameManager.gameManager.Blocks[(int)pos.x, (int)pos.y].GetComponent<BlockAlive>().state =
+                BlockState.Descend;
+            
             // delete current block object
             Destroy(gameObject);
         }

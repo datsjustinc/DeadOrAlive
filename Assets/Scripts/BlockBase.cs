@@ -50,12 +50,12 @@ namespace Life
                         }
                     }
                 }
-                
-                // block has reach just about its target position (in place due to floating-point round issues)
-                if ((transform.position - hoverPos).magnitude < 0.1f)
-                {
-                    state = BlockState.Descend;
-                }
+            }
+            
+            // block has reach just about its target position (in place due to floating-point round issues)
+            if ((transform.position - hoverPos).magnitude < 0.1f)
+            {
+                state = BlockState.Descend;
             }
             
             // check the state of the block every frame and execution methods

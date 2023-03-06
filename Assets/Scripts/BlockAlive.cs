@@ -7,6 +7,7 @@ namespace Life
 {
     public class BlockAlive : BlockBase
     {
+        private GameObject _hitId = null;
         /// <summary>
         /// This method inherits parent class start method.
         /// </summary>
@@ -34,26 +35,27 @@ namespace Life
                         // checks if raycast target matches clicked object
                         if (hit.collider.gameObject == gameObject)
                         {
+                            // record object hit id
+                            _hitId = hit.collider.gameObject;
+                            
                             // begin block hover animation
                             state = BlockState.Hover;
                         }
                     }
                 }
-
-                // block has reach just about its target position (in place due to floating-point round issues)
-                if ((transform.position - hoverPos).magnitude < 0.1f)
+            }
+            
+            // block has reach just about its target position (in place due to floating-point round issues)
+            if ((transform.position - hoverPos).magnitude < 0.1f)
+            {
+                if (_hitId == gameObject)
                 {
-                    state = BlockState.Descend;
-
-                    int x = (int)transform.position.x;
-                    int y = (int)transform.position.y;
-
-                    if (GameManager.gameManager.ability2)
-                    {
-                        GameManager.gameManager.ability2 = false;
-                        Surround(x, y);
-                    }
+                    var pos = transform.position;
+                    Surround((int) pos.x, (int) pos.y);
+                    _hitId = null;
                 }
+                
+                state = BlockState.Descend;
             }
             
             // check the state of the block every frame and execution methods
@@ -96,14 +98,8 @@ namespace Life
                     // if neighboring tile is 'dead'
                     if (!GameManager.gameManager.Cells[nx, ny])
                     {
-                        // turn tile on grid to 'alive' status
-                        GameManager.gameManager.Cells[nx, ny] = true;
-                        Destroy(GameManager.gameManager.Blocks[nx, ny]);
-                        
-                        // instantiate new 'alive' block in position as current neighboring block position
-                        GameManager.gameManager.Blocks[nx, ny] = Instantiate(GameManager.gameManager.alive,
-                            new Vector3(nx, ny, originalPos.z), Quaternion.Euler(-90, 0, 0),
-                            GameManager.gameManager.aliveParent);
+                        // set new instance of 'alive' block to descend state
+                        GameManager.gameManager.Blocks[nx, ny].GetComponent<BlockDead>().state = BlockState.Hover;
                     }
                 }
             }
