@@ -19,22 +19,26 @@ namespace Life
         public GameState state;
         
         // tile properties of tilemap
-        [SerializeField] protected int width = 10;
-        [SerializeField] protected int height = 10;
+        [SerializeField] public int width = 10;
+        [SerializeField] public int height = 10;
         [SerializeField] protected Tilemap tilemap;
 
         // block properties for tilemap
-        [SerializeField] protected GameObject alive;
-        [SerializeField] protected GameObject dead;
-        [SerializeField] protected Transform aliveParent;
-        [SerializeField] protected Transform deadParent;
+        [SerializeField] public GameObject alive;
+        [SerializeField] public GameObject dead;
+        [SerializeField] public Transform aliveParent;
+        [SerializeField] public Transform deadParent;
         
         // grid representing tilemap and block map
-        private bool[,] _cells;
-        private GameObject[,] _blocks;
+        public bool[,] Cells;
+        public GameObject[,] Blocks;
 
         // control variable for delays
         [SerializeField] protected bool check = true;
+        
+        // control variable for abilities
+        public bool ability1 = true;
+        public bool ability2 = true;
 
         /// <summary>
         /// This method is used to prevent duplicate GameManager objects.
@@ -60,8 +64,8 @@ namespace Life
         private IEnumerator Start()
         {
             // initializes a two-dimensional array ('grid') of bool values
-            _cells = new bool[width, height];
-            _blocks = new GameObject[width, height];
+            Cells = new bool[width, height];
+            Blocks = new GameObject[width, height];
 
             // goes through rows in two-dimensional array
             for (var x = 1; x < width - 1; x++)
@@ -70,11 +74,11 @@ namespace Life
                 for (var y = 1; y < height - 1; y++)
                 {
                     // randomizes bool values in current tile
-                    _cells[x, y] = Random.value > 0.5f;
+                    Cells[x, y] = Random.value > 0.5f;
 
                     // generate blocks based on bool status of current tile and assign group
-                    _blocks[x, y] = Instantiate(_cells[x, y] ? alive : dead, new Vector3(x, y, 0),
-                        Quaternion.Euler(-90, 0, 0), _cells[x, y] ? aliveParent : deadParent);
+                    Blocks[x, y] = Instantiate(Cells[x, y] ? alive : dead, new Vector3(x, y, 0),
+                        Quaternion.Euler(-90, 0, 0), Cells[x, y] ? aliveParent : deadParent);
                     
                     // amount of time to wait before next iteration of loop
                     yield return new WaitForSeconds(0.05f);
@@ -111,28 +115,28 @@ namespace Life
                     int liveNeighbors = CountLiveNeighbors(x, y);
 
                     // if current tile is 'living'
-                    if (_cells[x, y])
+                    if (Cells[x, y])
                     {
                         // if surrounding neighbors drop below 2, current tile 'dies' of underpopulation
                         // if surrounding neighbors rise above 3, current tile 'dies' of overpopulation
                         if (liveNeighbors < 2 || liveNeighbors > 3)
                         {
                             // the current tile is 'dead'
-                            _cells[x, y] = false;
+                            Cells[x, y] = false;
                             
                             // destroy current tile and replace with 'dead' one
-                            Destroy(_blocks[x, y]);
-                            _blocks[x, y] = Instantiate(dead, new Vector3(x, y, 0), 
+                            Destroy(Blocks[x, y]);
+                            Blocks[x, y] = Instantiate(dead, new Vector3(x, y, 0), 
                                 Quaternion.Euler(-90, 0, 0), deadParent);
                         }
                         else
                         {
                             // the current tile is 'alive'
-                            _cells[x, y] = true;
+                            Cells[x, y] = true;
                             
                             // destroy current tile and replace with 'alive' one
-                            Destroy(_blocks[x, y]);
-                            _blocks[x, y] = Instantiate(alive, new Vector3(x, y, 0), 
+                            Destroy(Blocks[x, y]);
+                            Blocks[x, y] = Instantiate(alive, new Vector3(x, y, 0), 
                                 Quaternion.Euler(-90, 0, 0), aliveParent);
                         }
                     }
@@ -143,22 +147,22 @@ namespace Life
                         if (liveNeighbors == 3)
                         {
                             // the current tile is 'alive'
-                            _cells[x, y] = true;
+                            Cells[x, y] = true;
                             
                             // destroy current tile and replace with 'alive' one
-                            Destroy(_blocks[x, y]);
-                            _blocks[x, y] = Instantiate(alive, new Vector3(x, y, 0), 
+                            Destroy(Blocks[x, y]);
+                            Blocks[x, y] = Instantiate(alive, new Vector3(x, y, 0), 
                                 Quaternion.Euler(-90, 0, 0), aliveParent);
                             
                         }
                         else
                         {
                             // the current tile is 'dead'
-                            _cells[x, y] = false;
+                            Cells[x, y] = false;
                             
                             // destroy current tile and replace with 'dead' one
-                            Destroy(_blocks[x, y]);
-                            _blocks[x, y] = Instantiate(dead, new Vector3(x, y, 0), 
+                            Destroy(Blocks[x, y]);
+                            Blocks[x, y] = Instantiate(dead, new Vector3(x, y, 0), 
                                 Quaternion.Euler(-90, 0, 0), deadParent);
                         }
                     }
@@ -201,8 +205,8 @@ namespace Life
                     }
                     
                     // update grid position based on rows and columns prior and following
-                    int nx = x + i;
-                    int ny = y + j;
+                    var nx = x + i;
+                    var ny = y + j;
                     
                     // position index out-of-bounds on grid
                     if (nx < 0 || nx > width || ny < 0 || ny > height)
@@ -212,7 +216,7 @@ namespace Life
                     }
                     
                     // if neighboring cell is 'alive'
-                    if (_cells[nx, ny])
+                    if (Cells[nx, ny])
                     {
                         //throw new
                         // increase 'live' neighbor tracker

@@ -1,35 +1,25 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using Life;
 
 namespace Life
 {
-    /// <summary>
-    /// This class defines the features of the block class.
-    /// </summary>
-    public class BlockBase : MonoBehaviour
+    public class BlockDead : BlockBase
     {
-        [SerializeField] protected Camera mainCamera;
-
-        // position properties of hover method
-        [SerializeField] protected Vector3 originalPos;
-        [SerializeField] protected Vector3 hoverPos;
-        
-        // block state enum status
-        public enum BlockState{Idle, Hover, Descend};
-        public BlockState state;
-
-        protected virtual void Start()
+        /// <summary>
+        /// This method inherits parent class start method.
+        /// </summary>
+        protected override void Start()
         {
-            mainCamera = Camera.main;
-            originalPos = transform.position;
-            originalPos.z = 0f;
-            hoverPos = new Vector3(originalPos.x, originalPos.y, -2f);
-            state = BlockState.Idle;
+            base.Start();
         }
 
         /// <summary>
-        /// This method manages the state of the block's actions.
+        /// This function controls function of block press.
         /// </summary>
-        protected virtual void Update()
+        protected override void Update()
         {
             // check if starting grid blocks are set up
             if (GameManager.gameManager.state == GameManager.GameState.Start)
@@ -54,7 +44,11 @@ namespace Life
                 // block has reach just about its target position (in place due to floating-point round issues)
                 if ((transform.position - hoverPos).magnitude < 0.1f)
                 {
-                    state = BlockState.Descend;
+                    if (GameManager.gameManager.ability1)
+                    {
+                        GameManager.gameManager.ability1 = false;
+                        Replace();
+                    }
                 }
             }
             
@@ -70,26 +64,36 @@ namespace Life
             }
         }
 
-        /// <summary>
-        /// This method raises the block to its target hover position over time.
-        /// </summary>
-        protected virtual void Hover()
+        protected virtual void Replace()
         {
-            transform.position = Vector3.Lerp(transform.position, hoverPos, 7f * Time.deltaTime);
+            var pos = transform.position;
+                    
+            // turn tile on grid to 'alive' status
+            GameManager.gameManager.Cells[(int) pos.x, (int) pos.y] = true;
+                    
+            // instantiate new 'alive' block in position as current block
+            GameManager.gameManager.Blocks[(int)pos.x, (int)pos.y] = Instantiate(GameManager.gameManager.alive,
+                new Vector3(pos.x, pos.y, hoverPos.z), Quaternion.Euler(-90, 0, 0),
+                GameManager.gameManager.aliveParent);
+
+            // delete current block object
+            Destroy(gameObject);
         }
 
         /// <summary>
-        /// This method lowers the block back to its original starting position over time.
+        /// This method inherits parent class hover method.
         /// </summary>
-        protected virtual void Descend()
+        protected override void Hover()
         {
-            transform.position = Vector3.Lerp(transform.position, originalPos, 7f * Time.deltaTime);
+            base.Hover();
+        }
 
-            if ((transform.position - originalPos).magnitude < 0.001f)
-            {
-                state = BlockState.Idle;
-            }
+        /// <summary>
+        /// This method inherits parent class descend method.
+        /// </summary>
+        protected override void Descend()
+        {
+            base.Descend();
         }
     }
 }
-

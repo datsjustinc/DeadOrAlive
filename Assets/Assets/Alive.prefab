@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 9047304937572278848}
   - component: {fileID: 5341727047556083173}
   - component: {fileID: 7909824233050331439}
-  - component: {fileID: 3890167411837574506}
   - component: {fileID: 2517968796988335676}
+  - component: {fileID: -6678890707977008404}
   m_Layer: 0
   m_Name: Alive
-  m_TagString: Untagged
+  m_TagString: Alive
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -86,22 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3890167411837574506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8558435007244433658}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd61225f438627346bdd4a40105883cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
-  rotateSpeed: 5
-  originalPos: {x: 0, y: 0, z: 0}
-  hoverPos: {x: 0, y: 0, z: -8}
 --- !u!65 &2517968796988335676
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -115,3 +99,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0.49999997, z: 0}
+--- !u!114 &-6678890707977008404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8558435007244433658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d751849df4ad20a4db557ed70c6ed466, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
+  originalPos: {x: 0, y: 0, z: 0}
+  hoverPos: {x: 0, y: 0, z: 0}
+  state: 0
