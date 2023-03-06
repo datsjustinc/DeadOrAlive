@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Profiling.Memory.Experimental;
 using UnityEngine;
 
 namespace Life
@@ -10,59 +11,90 @@ namespace Life
         [SerializeField] protected Camera mainCamera;
         [SerializeField] protected float rotateSpeed;
 
+        // position properties of hover method
         [SerializeField] protected Vector3 originalPos;
         [SerializeField] protected Vector3 hoverPos;
-
+        
+        // game state enum
+        public enum BlockState{Idle, Hover, Spin, Descend};
+        public BlockState state;
+        
         protected virtual void Start()
         {
             mainCamera = Camera.main;
             originalPos = transform.position;
-            hoverPos = new Vector3(originalPos.x, originalPos.y, -80f);
-
+            hoverPos = new Vector3(originalPos.x, originalPos.y, -2f);
+            state = BlockState.Idle;
         }
 
+        /// <summary>
+        /// This method manages the state of the block's actions.
+        /// </summary>
         protected virtual void Update()
         {
-            if (Input.GetMouseButton(0) && GameManager.gameManager.state == GameManager.GameState.Start)
+            // check if starting grid blocks are set up
+            if (GameManager.gameManager.state == GameManager.GameState.Start)
             {
-                Hover();
+                // check if block is in idle state and mouse clicked
+                if (Input.GetMouseButtonDown(0) && state == BlockState.Idle)
+                {
+                    RaycastHit hit;
+                    Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        // checks if raycast target matches clicked object
+                        if (hit.collider.gameObject == gameObject)
+                        {
+                            // begin block hover animation
+                            state = BlockState.Hover;
+                        }
+                    }
+                }
+                
+                // block has reach just about its target position (in place due to floating-point round issues)
+                if ((transform.position - hoverPos).magnitude < 0.1f)
+                {
+                    state = BlockState.Descend;
+                }
+            }
+            
+            // check the state of the block every frame and execution methods
+            switch (state)
+            {
+                case BlockState.Hover:
+                    Hover();
+                    break;
+                case BlockState.Descend:
+                    Descend();
+                    break;
             }
         }
 
+        /// <summary>
+        /// This method raises the block to its target hover position over time.
+        /// </summary>
         protected virtual void Hover()
         {
-            RaycastHit hit;
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            
-            if (Physics.Raycast(ray, out hit))
-            {
-                // checks if raycast target matches current object
-                if (hit.collider.gameObject == gameObject)
-                {
-                    transform.position = Vector3.Lerp(transform.position, hoverPos, 0.05f * Time.deltaTime);
-                }
-            }
+            transform.position = Vector3.Lerp(transform.position, hoverPos, 7f * Time.deltaTime);
         }
 
-        protected virtual void Rotate()
+        /// <summary>
+        /// This method lowers the block back to its original starting position over time.
+        /// </summary>
+        protected virtual void Descend()
         {
-            RaycastHit hit;
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            
-            if (Physics.Raycast(ray, out hit))
+            transform.position = Vector3.Lerp(transform.position, originalPos, 7f * Time.deltaTime);
+
+            if ((transform.position - originalPos).magnitude < 0.001f)
             {
-                // checks if raycast target matches current object
-                if (hit.collider.gameObject == gameObject)
-                {
-                    // grabs direction of mouse drag
-                    var mouseX = Input.GetAxis("Mouse X");
-                    var mouseY = Input.GetAxis("Mouse Y");
-            
-                    // updates cube rotation with mouse drag direction
-                    transform.Rotate(Vector3.up, -mouseX * rotateSpeed);
-                    transform.Rotate(Vector3.right, mouseY * rotateSpeed);
-                }
+                state = BlockState.Idle;
             }
+        }
+        
+        protected virtual void Spin()
+        {
+            
         }
     }
 }
