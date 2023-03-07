@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Life;
 
@@ -8,6 +6,10 @@ namespace Life
     public class BlockAlive : BlockBase
     {
         private GameObject _hitId = null;
+        
+        // block action particle affects
+        [SerializeField] public ParticleSystem explosion;
+
         /// <summary>
         /// This method inherits parent class start method.
         /// </summary>
@@ -51,8 +53,10 @@ namespace Life
             {
                 state = BlockState.Descend;
                 AudioManager.audioManager.BlockDescend();
+
+                // activate camera shake
                 var cameraShake = mainCamera.GetComponent<CameraShake>();
-                cameraShake.Shake(0.1f, 0.1f);
+                cameraShake.Shake(0.2f, 0.1f);
                 
                 if (_hitId == gameObject)
                 {
@@ -127,7 +131,12 @@ namespace Life
         /// </summary>
         protected override void Descend()
         {
-            base.Descend();
+            transform.position = Vector3.Lerp(transform.position, originalPos, 7f * Time.deltaTime);
+
+            if ((transform.position - originalPos).magnitude < 0.001f)
+            {
+                state = BlockState.Idle;
+            }
         }
     }
 }

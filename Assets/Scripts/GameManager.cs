@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace Life
@@ -81,18 +80,19 @@ namespace Life
                         Quaternion.Euler(-90, 0, 0), Cells[x, y] ? aliveParent : deadParent);
                     
                     // amount of time to wait before next iteration of loop
-                    yield return new WaitForSeconds(0.05f);
+                    yield return new WaitForSeconds(0.02f);
                 }
             }
 
             // begin automating simulation
             state = GameState.Start;
+
+            // increase game difficulty over time
+            InvokeRepeating(nameof(Difficulty), 0f, 20f);
         }
         
         private void Update()
         {
-            //Time.timeScale = 50;
-            
             if(check && state == GameState.Start)
             {
                 check = false;
@@ -227,6 +227,27 @@ namespace Life
             
             // return status of 'live' neighbors
             return count;
+        }
+
+        /// <summary>
+        /// This method updates level difficulty data on UIManager.
+        /// </summary>
+        private void Difficulty()
+        {
+            // increase level difficulty
+            UIManager.uiManager.levelCount += 1;
+            UIManager.uiManager.LevelChange();
+            
+            Invoke(nameof(CloseDifficulty), 2f);
+        }
+
+        /// <summary>
+        /// This method closes level difficulty data after a delay.
+        /// </summary>
+        private void CloseDifficulty()
+        {
+            var reverse = !UIManager.uiManager.levelAnim.GetBool("Open");
+            UIManager.uiManager.levelAnim.SetBool("Open", reverse);
         }
         
     }

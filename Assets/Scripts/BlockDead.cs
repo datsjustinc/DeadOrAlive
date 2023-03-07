@@ -1,13 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Life;
 
 namespace Life
 {
     public class BlockDead : BlockBase
     {
+        // block action particle affects
+        [SerializeField] public ParticleSystem explosion;
+
         /// <summary>
         /// This method inherits parent class start method.
         /// </summary>
@@ -49,8 +49,10 @@ namespace Life
                 Replace();
                 state = BlockState.Descend;
                 AudioManager.audioManager.BlockDescend();
+                
+                // activate camera shake
                 var cameraShake = mainCamera.GetComponent<CameraShake>();
-                cameraShake.Shake(0.1f, 0.1f);
+                cameraShake.Shake(0.2f, 0.1f);
             }
             
             // check the state of the block every frame and execution methods
@@ -81,11 +83,14 @@ namespace Life
             GameManager.gameManager.Blocks[(int)pos.x, (int)pos.y] = Instantiate(GameManager.gameManager.alive,
                 new Vector3(pos.x, pos.y, hoverPos.z), Quaternion.Euler(-90, 0, 0),
                 GameManager.gameManager.aliveParent);
+            
+            // play particle affect block replacement
+            GameManager.gameManager.Blocks[(int)pos.x, (int)pos.y].GetComponent<BlockAlive>().explosion.Play();
 
             // set new instance of 'alive' block to descend state
             GameManager.gameManager.Blocks[(int)pos.x, (int)pos.y].GetComponent<BlockAlive>().state =
                 BlockState.Descend;
-            
+
             // delete current block object
             Destroy(gameObject);
         }
@@ -103,7 +108,12 @@ namespace Life
         /// </summary>
         protected override void Descend()
         {
-            base.Descend();
+            transform.position = Vector3.Lerp(transform.position, originalPos, 7f * Time.deltaTime);
+
+            if ((transform.position - originalPos).magnitude < 0.001f)
+            {
+                state = BlockState.Idle;
+            }
         }
     }
 }

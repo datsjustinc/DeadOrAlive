@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Life
@@ -9,8 +7,10 @@ namespace Life
     /// </summary>
     public class AudioManager : MonoBehaviour
     {
+        // singleton of class
         public static AudioManager audioManager;
         
+        // audio clips
         [SerializeField] private AudioClip blockHover;
         [SerializeField] private AudioClip blockReplace;
         [SerializeField] private AudioClip blockDescend;
