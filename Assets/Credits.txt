@@ -1,0 +1,13 @@
+Credits
+
+(http://freesound.org/) 
+*licensed under CCBYNC 4.0
+- plasterbrain
+- LloydEvans09
+- sonically_sound
+
+(https://assetstore.unity.com/packages/2d/environments/2d-hex-sprites-hexagonal-tile-setup-135185) 
+*liscensed under Standard Unity Asset Store EULA
+
+(https://kenney.nl/documentation/game-assets/tilemaps#Tiled)
+*free for educational use

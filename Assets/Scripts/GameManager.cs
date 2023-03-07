@@ -35,9 +35,12 @@ namespace Life
         // control variable for delays
         [SerializeField] protected bool check = true;
         
-        // control variable for abilities
-        public bool ability1 = true;
-        public bool ability2 = true;
+        // control variable for difficulty
+        public float minDelay;
+        public float maxDelay;
+        public int underPopulation;
+        public int overPopulation;
+        public int revivalPopulation;
 
         /// <summary>
         /// This method is used to prevent duplicate GameManager objects.
@@ -87,6 +90,13 @@ namespace Life
             // begin automating simulation
             state = GameState.Start;
 
+            // set starting difficult delay range
+            minDelay = 0.1f;
+            maxDelay = 0.2f;
+            underPopulation = 2;
+            overPopulation = 3;
+            revivalPopulation = 3;
+
             // increase game difficulty over time
             InvokeRepeating(nameof(Difficulty), 0f, 20f);
         }
@@ -119,7 +129,7 @@ namespace Life
                     {
                         // if surrounding neighbors drop below 2, current tile 'dies' of underpopulation
                         // if surrounding neighbors rise above 3, current tile 'dies' of overpopulation
-                        if (liveNeighbors < 2 || liveNeighbors > 3)
+                        if (liveNeighbors < underPopulation || liveNeighbors > overPopulation)
                         {
                             // the current tile is 'dead'
                             Cells[x, y] = false;
@@ -144,7 +154,7 @@ namespace Life
                     else
                     {
                         // if surrounding neighbors reach exactly 3, current tile 'revives' from reproduction
-                        if (liveNeighbors == 3)
+                        if (liveNeighbors == revivalPopulation)
                         {
                             // the current tile is 'alive'
                             Cells[x, y] = true;
@@ -168,7 +178,7 @@ namespace Life
                     }
                     
                     // randomize time to delay the tile checking loop
-                    yield return new WaitForSeconds(Random.Range(0.05f, 0.1f));
+                    yield return new WaitForSeconds(Random.Range(minDelay, maxDelay));
 
                     // if last tile in grid is current being checked
                     if (x == width - 2 && y == height - 2)
@@ -234,7 +244,7 @@ namespace Life
         /// </summary>
         private void Difficulty()
         {
-            // increase level difficulty
+            // minor increase level difficulty change
             UIManager.uiManager.levelCount += 1;
             UIManager.uiManager.LevelChange();
             
@@ -248,6 +258,26 @@ namespace Life
         {
             var reverse = !UIManager.uiManager.levelAnim.GetBool("Open");
             UIManager.uiManager.levelAnim.SetBool("Open", reverse);
+            
+            minDelay /= 1.5f;
+            maxDelay /= 1.5f;
+
+            // major increase level difficulty change
+            if (UIManager.uiManager.levelCount != 0 && UIManager.uiManager.levelCount % 5 == 0)
+            {
+                // increase neighbors required to revive a 'dead' block
+                revivalPopulation += 1;
+            }
+            
+            // major increase level difficulty change
+            if (UIManager.uiManager.levelCount != 0 && UIManager.uiManager.levelCount % 8 == 0)
+            {
+                // increase chance of blocks dying due to under population
+                underPopulation += 1;
+                
+                // increase chance of blocks dying due to under population
+                overPopulation -= 1;
+            }
         }
         
     }

@@ -107,7 +107,7 @@ namespace Life
                     SceneManager.LoadScene(sceneWin);
                 }
 
-                if (Mathf.Round(dead * (100f / (alive + dead))) > 90f)
+                if (Mathf.Round(dead * (100f / (alive + dead))) > 70f)
                 {
                     gameLose.enabled = true;
                     SceneManager.LoadScene(sceneLose);
